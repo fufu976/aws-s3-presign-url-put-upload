@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html" />
+    <title>File Server</title>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <form id="theForm" action="index.php" method="POST" enctype="multipart/form-data" >
+        <input id="theFile" name="file" type="file"/> 
+        <input class="btn btn-success" type="submit" value="Upload">
+    </form>
+    <div id="err"></div>
+<script>
+
+$(document).ready(function (e) {
+    $("#theForm").on('submit',function(e) {
+        e.preventDefault();
+        var purl = "[PRESIGN-URL]";
+        console.log(purl);
+        $.ajax({
+            type: "PUT",
+            headers: {"Content-Type": 'multipart/form-data'},
+            url: purl,
+            data:  new FormData(this),
+            //contentType: false,
+            processData: false,
+            contentType: false,
+            crossDomain: true,
+            cache: false,
+            beforeSend : function()
+            {
+                //$("#preview").fadeOut();
+                $("#err").fadeOut();
+            },
+            success: function(data)
+            {
+                if(data=='invalid')
+                {
+                    // invalid file format.
+                    $("#err").html("Invalid File !").fadeIn();
+                }
+                else
+                {
+                    // view uploaded file.
+                    //$("#preview").html(data).fadeIn();
+                    $("#theForm")[0].reset(); 
+                }
+            },
+            error: function(e) 
+            {
+                $("#err").html(e).fadeIn();
+            }          
+        });
+    });
+});
+
+</script>
+
+</body>
+</html>
